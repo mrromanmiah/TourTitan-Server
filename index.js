@@ -25,12 +25,34 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         const packageCollection = client.db('tourTitan').collection('packages');
+        const storyCollection = client.db('tourTitan').collection('stories');
 
         app.get('/packages', async (req, res) => {
             const cursor = packageCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
+        app.get('/allPackages', async (req, res) => {
+            const cursor = packageCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+        app.get('/tourType', async (req, res) => {
+            const cursor = packageCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/packages/:tourType', async (req, res) => {
+            const tourType = req.params.tourType || '';
+            const query = {tourType: tourType};
+            const result = await packageCollection.find(query).toArray();
+            res.send(result);
+        })
+
+
+
+
 
 
 
