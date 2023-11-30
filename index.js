@@ -10,7 +10,7 @@ app.use(express.json());
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jjwufqp.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -25,7 +25,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         const packageCollection = client.db('tourTitan').collection('packages');
-        const storyCollection = client.db('tourTitan').collection('stories');
+        const userCollection = client.db('tourTitan').collection('users');
 
         app.get('/packages', async (req, res) => {
             const cursor = packageCollection.find();
@@ -47,6 +47,12 @@ async function run() {
             const tourType = req.params.tourType || '';
             const query = {tourType: tourType};
             const result = await packageCollection.find(query).toArray();
+            res.send(result);
+        })
+        app.get('/package/:id', async (req, res) => {
+            const id = req.params.id || '';
+            const query = { _id: new ObjectId(id) };
+            const result = await packageCollection.findOne(query);
             res.send(result);
         })
 
