@@ -26,7 +26,7 @@ async function run() {
     try {
         const packageCollection = client.db('tourTitan').collection('packages');
         const userCollection = client.db('tourTitan').collection('users');
-        // const userCollection = client.db('tourTitan').collection('users');
+        const wishlistCollection = client.db('tourTitan').collection('wishlist');
 
 
 
@@ -69,6 +69,12 @@ async function run() {
             const id = req.params.id || '';
             const query = { _id: new ObjectId(id) };
             const result = await packageCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.post('/wishlist', async (req, res) => {
+            const wishPackage = req.body;
+            const result = await wishlistCollection.insertOne(wishPackage);
             res.send(result);
         })
 
