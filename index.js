@@ -29,8 +29,10 @@ async function run() {
         const wishlistCollection = client.db('tourTitan').collection('wishlist');
 
 
-
-
+        app.get('/users', async(req, res) => {
+            const result = await userCollection.find().toArray();
+            res.send(result);
+        })
 
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -40,6 +42,18 @@ async function run() {
                 return res.send ({message: 'User already exists', insertedId: null});
             }
             const result = await userCollection.insertOne(user);
+            res.send(result);
+        })
+
+        app.patch('/users/admin/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = {_id: new ObjectId(id)};
+            const updatedDoc = {
+                $set: {
+                    role: 'admin'
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedDoc);
             res.send(result);
         })
 
