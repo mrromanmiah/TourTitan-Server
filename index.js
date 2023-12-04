@@ -63,8 +63,15 @@ async function run() {
         })
 
 
-        app.get('/users', verifyToken, verifyAdmin, async (req, res) => {
+        app.get('/users', async (req, res) => {
             const result = await userCollection.find().toArray();
+            res.send(result);
+        })
+
+        app.get('/users/:email', async (req, res) => {
+            const email = req.params.email || '';
+            const query = { email: email };
+            const result = await userCollection.findOne(query);
             res.send(result);
         })
 
@@ -82,6 +89,22 @@ async function run() {
                 admin = user?.role === 'admin';
             }
             res.send({ admin });
+        })
+
+        app.get('/users/guide/:email', verifyToken, async (req, res) => {
+            const email = req.params.email;
+
+            if (email !== req.decoded.email) {
+                return res.status(403).send({ message: 'forbidden access' })
+            }
+
+            const query = { email: email };
+            const user = await userCollection.findOne(query);
+            let guide = false;
+            if (user) {
+                guide = user?.role === 'guide';
+            }
+            res.send({ guide });
         })
 
         app.post('/users', async (req, res) => {
