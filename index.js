@@ -75,6 +75,7 @@ async function run() {
             res.send(result);
         })
 
+
         app.get('/users/admin/:email', verifyToken, async (req, res) => {
             const email = req.params.email;
 
@@ -91,7 +92,7 @@ async function run() {
             res.send({ admin });
         })
 
-        app.get('/users/guide/:email', verifyToken, async (req, res) => {
+        app.get('/users/guide/:email', async (req, res) => {
             const email = req.params.email;
 
             if (email !== req.decoded.email) {
@@ -168,6 +169,12 @@ async function run() {
             const id = req.params.id || '';
             const query = { _id: new ObjectId(id) };
             const result = await packageCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.post('/packages', async (req, res) => {
+            const newPackage = req.body;
+            const result = await packageCollection.insertOne(newPackage);
             res.send(result);
         })
 
